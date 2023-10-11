@@ -1,0 +1,23 @@
+{
+    "name": "fff_cog",
+    "short": "A simple FFF poster cog",
+    "description": "A simple cog to post Factorio Friday Facts when they're available.",
+    "end_user_data_statement": "This cog does not store end user data.",
+    "author": [
+        "ChaseCares"
+    ],
+    "required_cogs": {},
+    "requirements": [
+        "beautifulsoup4",
+        "feedparser"
+    ],
+    "tags": [
+        "FFF",
+        "Factorio",
+        "Friday Facts"
+    ],
+    "min_bot_version": "3.5.0",
+    "hidden": false,
+    "disabled": false,
+    "type": "COG"
+}
