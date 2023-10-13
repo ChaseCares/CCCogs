@@ -5,7 +5,7 @@ import aiohttp
 import discord
 
 # Remove when minimum python version is > 3.10
-from typing import Union
+from typing import Union, Optional
 from discord.ext import tasks
 from redbot.core import Config, commands, checks
 
@@ -13,7 +13,6 @@ __all__ = ["UNIQUE_ID", "FactorioCogFriday"]
 
 UNIQUE_ID = 0x10692DF0DC6C388
 
-# RSS feed
 FFF_RSS = "https://www.factorio.com/blog/rss"
 
 fffnumREPat = re.compile(r"<id>https://www\.factorio\.com/blog/post/fff-(\d*)</id>")
@@ -88,7 +87,7 @@ class FactorioCogFriday(commands.Cog):
         """A simple cog to post FFFs when they're available."""
 
     @fcf.command()
-    async def fff(self, ctx: commands.Context, number: Union[str, None] = None):
+    async def fff(self, ctx: commands.Context, number: Optional[int]):
         """
         Links the latest fff or the specific FFF if a number is provided.
         """
@@ -105,9 +104,9 @@ class FactorioCogFriday(commands.Cog):
     @checks.admin_or_permissions(manage_guild=True)
     @commands.guild_only()
     @fcf.command(name="addchannel")
-    async def addChannel(self, ctx: commands.Context, channel: Union[str, None] = None):
+    async def addChannel(self, ctx: commands.Context, channel: Optional[int]):
         """
-        Adds the current channel to receive regular FFFs.
+        Adds the current or a given channel to receive regular FFFs.
         """
         if ctx.guild is not None:
             if channel is None:
@@ -123,7 +122,7 @@ class FactorioCogFriday(commands.Cog):
             else:
                 try:
                     text_channel = await commands.TextChannelConverter().convert(
-                        ctx, channel
+                        ctx, str(channel)
                     )
                 except commands.ChannelNotFound:
                     await ctx.send("That channel doesn't exist.")
@@ -140,11 +139,9 @@ class FactorioCogFriday(commands.Cog):
     @checks.admin_or_permissions(manage_guild=True)
     @commands.guild_only()
     @fcf.command(name="rmchannel")
-    async def removeChannel(
-        self, ctx: commands.Context, channel: Union[str, None] = None
-    ):
+    async def removeChannel(self, ctx: commands.Context, channel: Optional[int]):
         """
-        Removes the current channel from receiving regular FFFs.
+        Removes the current or a given channel from receiving regular FFFs.
         """
         if ctx.guild is not None:
             if channel is None:
@@ -159,7 +156,7 @@ class FactorioCogFriday(commands.Cog):
             else:
                 try:
                     text_channel = await commands.TextChannelConverter().convert(
-                        ctx, channel
+                        ctx, str(channel)
                     )
                 except commands.ChannelNotFound:
                     await ctx.send("That channel doesn't exist.")
