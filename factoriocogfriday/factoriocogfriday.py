@@ -86,6 +86,7 @@ class FactorioCogFriday(commands.Cog):
     async def fcf(self, ctx: commands.Context):
         """A simple cog to post FFFs when they're available."""
 
+    @commands.cooldown(1, 5, commands.BucketType.guild)
     @fcf.command(usage="Optional[number]")
     async def fff(self, ctx: commands.Context, number: Optional[int]):
         """
