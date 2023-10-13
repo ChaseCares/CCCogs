@@ -110,7 +110,6 @@ class FactorioCogFriday(commands.Cog):
         """
         if ctx.guild is not None:
             if channel is None:
-                gID = ctx.guild
                 async with self.conf.guild(ctx.guild).channels() as channels:
                     if ctx.channel.id in channels:
                         await ctx.send("This channel is already receiving FFFs.")
