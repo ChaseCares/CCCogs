@@ -86,10 +86,10 @@ class FactorioCogFriday(commands.Cog):
     async def fcf(self, ctx: commands.Context):
         """A simple cog to post FFFs when they're available."""
 
-    @fcf.command()
+    @fcf.command(usage="Optional[number]")
     async def fff(self, ctx: commands.Context, number: Optional[int]):
         """
-        Links the latest fff or the specific FFF if a number is provided.
+        Links the latest FFF or the specific FFF if a number is provided.
         """
         if number is not None:
             await ctx.send(f"https://factorio.com/blog/post/fff-{number}")
@@ -103,10 +103,13 @@ class FactorioCogFriday(commands.Cog):
 
     @checks.admin_or_permissions(manage_guild=True)
     @commands.guild_only()
-    @fcf.command(name="addchannel")
+    @fcf.command(name="addchannel", aliases=["add"], usage="Optional[channel]")
     async def addChannel(self, ctx: commands.Context, channel: Optional[int]):
         """
         Adds the current or a given channel to receive regular FFFs.
+
+        - If no channel is given, the current channel will be added.
+        - `<channel>`: If a channel is given, that channel is added.
         """
         if ctx.guild is not None:
             if channel is None:
@@ -148,10 +151,13 @@ class FactorioCogFriday(commands.Cog):
 
     @checks.admin_or_permissions(manage_guild=True)
     @commands.guild_only()
-    @fcf.command(name="rmchannel")
+    @fcf.command(name="rmchannel", aliases=["remove"], usage="Optional[channel]")
     async def removeChannel(self, ctx: commands.Context, channel: Optional[int]):
         """
         Removes the current or a given channel from receiving regular FFFs.
+
+        - If no channel is given, the current channel is removed.
+        - `<channel>`: If a channel is given, that channel is removed.
         """
         if ctx.guild is not None:
             if channel is None:
