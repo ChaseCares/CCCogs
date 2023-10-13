@@ -167,7 +167,7 @@ class FactorioCogFriday(commands.Cog):
     @factorio_cog_friday.command(name="add_channel")
     async def addChannel(self, ctx: commands.Context):
         """
-        Add channel to receive regular FFFs.
+        Adds the current channel to receive regular FFFs.
         """
         async with self.conf.guild(ctx.guild).channels() as channels:
             if ctx.channel.id in channels:
@@ -181,7 +181,7 @@ class FactorioCogFriday(commands.Cog):
     @factorio_cog_friday.command(name="remove_channel")
     async def removeChannel(self, ctx: commands.Context):
         """
-        Remove channel from receiving regular FFFs.
+        Removes the current channel from receiving regular FFFs.
         """
         async with self.conf.guild(ctx.guild).channels() as channels:
             if ctx.channel.id in channels:
