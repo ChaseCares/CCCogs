@@ -1,5 +1,5 @@
 {
-    "name": "fff_cog",
+    "name": "FactorioCogFriday",
     "short": "A simple FFF poster cog",
     "description": "A simple cog to post Factorio Friday Facts when they're available.",
     "end_user_data_statement": "This cog does not store end user data.",
@@ -7,10 +7,7 @@
         "ChaseCares"
     ],
     "required_cogs": {},
-    "requirements": [
-        "beautifulsoup4",
-        "feedparser"
-    ],
+    "requirements": [],
     "tags": [
         "FFF",
         "Factorio",
