@@ -130,10 +130,21 @@ class FactorioCogFriday(commands.Cog):
                     if text_channel.id in channels:
                         await ctx.send("That channel is already receiving FFFs.")
                     else:
-                        channels.append(text_channel.id)
-                        await ctx.send(
-                            f"Added {text_channel.mention} to the list of channels receiving FFFs.\nTo remove this channel, use `{ctx.prefix}fcf rmchannel {text_channel.mention}`."
-                        )
+                        try:
+                            await self._check_for_update(ctx.guild, text_channel.id)
+                        except discord.errors.Forbidden:
+                            await ctx.send(
+                                "I don't have permission to send messages to that channel."
+                            )
+                            return
+                        except Exception as e:
+                            await ctx.send(f"Error: {e}")
+                            return
+                        else:
+                            channels.append(text_channel.id)
+                            await ctx.send(
+                                f"Added {text_channel.mention} to the list of channels receiving FFFs.\nTo remove this channel, use `{ctx.prefix}fcf rmchannel {text_channel.mention}`."
+                            )
 
     @checks.admin_or_permissions(manage_guild=True)
     @commands.guild_only()
