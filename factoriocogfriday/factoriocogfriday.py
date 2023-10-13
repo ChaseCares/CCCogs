@@ -91,15 +91,16 @@ class FactorioCogFriday(commands.Cog):
         """
         Links the latest FFF or the specific FFF if a number is provided.
         """
-        if number is not None:
-            await ctx.send(f"https://factorio.com/blog/post/fff-{number}")
-        else:
-            async with ctx.channel.typing():
-                fff_num = await self._get_latest_fff_number()
-                if fff_num:
-                    await ctx.send(f"https://factorio.com/blog/post/fff-{fff_num}")
-                else:
-                    await ctx.send("Error finding FFF number.")
+        if not ctx.message.author.bot:
+            if number is not None:
+                await ctx.send(f"https://factorio.com/blog/post/fff-{number}")
+            else:
+                async with ctx.channel.typing():
+                    fff_num = await self._get_latest_fff_number()
+                    if fff_num:
+                        await ctx.send(f"https://factorio.com/blog/post/fff-{fff_num}")
+                    else:
+                        await ctx.send("Error finding FFF number.")
 
     @checks.admin_or_permissions(manage_guild=True)
     @commands.guild_only()
@@ -111,43 +112,44 @@ class FactorioCogFriday(commands.Cog):
         - If no channel is given, the current channel will be added.
         - `<channel>`: If a channel is given, that channel is added.
         """
-        if ctx.guild is not None:
-            if channel is None:
-                async with self.conf.guild(ctx.guild).channels() as channels:
-                    if ctx.channel.id in channels:
-                        await ctx.send("This channel is already receiving FFFs.")
-                    else:
-                        channels.append(ctx.channel.id)
-                        await ctx.send(
-                            f"Added this channel to the list of channels receiving FFFs.\nTo remove this channel, use `{ctx.prefix}fcf rmchannel`."
-                        )
-            else:
-                try:
-                    text_channel = await commands.TextChannelConverter().convert(
-                        ctx, str(channel)
-                    )
-                except commands.ChannelNotFound:
-                    await ctx.send("That channel doesn't exist.")
-                    return
-                async with self.conf.guild(ctx.guild).channels() as channels:
-                    if text_channel.id in channels:
-                        await ctx.send("That channel is already receiving FFFs.")
-                    else:
-                        try:
-                            await self._check_for_update(ctx.guild, text_channel.id)
-                        except discord.errors.Forbidden:
-                            await ctx.send(
-                                "I don't have permission to send messages to that channel."
-                            )
-                            return
-                        except Exception as e:
-                            await ctx.send(f"Error: {e}")
-                            return
+        if not ctx.message.author.bot:
+            if ctx.guild is not None:
+                if channel is None:
+                    async with self.conf.guild(ctx.guild).channels() as channels:
+                        if ctx.channel.id in channels:
+                            await ctx.send("This channel is already receiving FFFs.")
                         else:
-                            channels.append(text_channel.id)
+                            channels.append(ctx.channel.id)
                             await ctx.send(
-                                f"Added {text_channel.mention} to the list of channels receiving FFFs.\nTo remove this channel, use `{ctx.prefix}fcf rmchannel {text_channel.mention}`."
+                                f"Added this channel to the list of channels receiving FFFs.\nTo remove this channel, use `{ctx.prefix}fcf rmchannel`."
                             )
+                else:
+                    try:
+                        text_channel = await commands.TextChannelConverter().convert(
+                            ctx, str(channel)
+                        )
+                    except commands.ChannelNotFound:
+                        await ctx.send("That channel doesn't exist.")
+                        return
+                    async with self.conf.guild(ctx.guild).channels() as channels:
+                        if text_channel.id in channels:
+                            await ctx.send("That channel is already receiving FFFs.")
+                        else:
+                            try:
+                                await self._check_for_update(ctx.guild, text_channel.id)
+                            except discord.errors.Forbidden:
+                                await ctx.send(
+                                    "I don't have permission to send messages to that channel."
+                                )
+                                return
+                            except Exception as e:
+                                await ctx.send(f"Error: {e}")
+                                return
+                            else:
+                                channels.append(text_channel.id)
+                                await ctx.send(
+                                    f"Added {text_channel.mention} to the list of channels receiving FFFs.\nTo remove this channel, use `{ctx.prefix}fcf rmchannel {text_channel.mention}`."
+                                )
 
     @checks.admin_or_permissions(manage_guild=True)
     @commands.guild_only()
@@ -159,29 +161,32 @@ class FactorioCogFriday(commands.Cog):
         - If no channel is given, the current channel is removed.
         - `<channel>`: If a channel is given, that channel is removed.
         """
-        if ctx.guild is not None:
-            if channel is None:
-                async with self.conf.guild(ctx.guild).channels() as channels:
-                    if ctx.channel.id in channels:
-                        channels.remove(ctx.channel.id)
-                        await ctx.send(
-                            "Removed this channel from the list of channels receiving FFFs."
+        if not ctx.message.author.bot:
+            if ctx.guild is not None:
+                if channel is None:
+                    async with self.conf.guild(ctx.guild).channels() as channels:
+                        if ctx.channel.id in channels:
+                            channels.remove(ctx.channel.id)
+                            await ctx.send(
+                                "Removed this channel from the list of channels receiving FFFs."
+                            )
+                        else:
+                            await ctx.send("This channel is not receiving FFFs.")
+                else:
+                    try:
+                        text_channel = await commands.TextChannelConverter().convert(
+                            ctx, str(channel)
                         )
-                    else:
-                        await ctx.send("This channel is not receiving FFFs.")
-            else:
-                try:
-                    text_channel = await commands.TextChannelConverter().convert(
-                        ctx, str(channel)
-                    )
-                except commands.ChannelNotFound:
-                    await ctx.send("That channel doesn't exist.")
-                    return
-                async with self.conf.guild(ctx.guild).channels() as channels:
-                    if text_channel.id in channels:
-                        channels.remove(text_channel.id)
-                        await ctx.send(
-                            f"Removed {text_channel.mention} from the list of channels receiving FFFs."
-                        )
-                    else:
-                        await ctx.send(f"{text_channel.mention} is not receiving FFFs.")
+                    except commands.ChannelNotFound:
+                        await ctx.send("That channel doesn't exist.")
+                        return
+                    async with self.conf.guild(ctx.guild).channels() as channels:
+                        if text_channel.id in channels:
+                            channels.remove(text_channel.id)
+                            await ctx.send(
+                                f"Removed {text_channel.mention} from the list of channels receiving FFFs."
+                            )
+                        else:
+                            await ctx.send(
+                                f"{text_channel.mention} is not receiving FFFs."
+                            )
