@@ -8,6 +8,7 @@ import discord
 from typing import Union, Optional
 from discord.ext import tasks
 from redbot.core import Config, commands, checks
+from redbot.core.utils.chat_formatting import success, error, humanize_timedelta
 
 __all__ = ["UNIQUE_ID", "FactorioCogFriday"]
 
@@ -54,7 +55,9 @@ class FactorioCogFriday(commands.Cog):
         self.bot = bot
         self.conf = Config.get_conf(self, identifier=UNIQUE_ID, force_registration=True)
         self.conf.register_guild(fff_info={}, channels=[])
-        self.conf.register_global(latest_fff=None, last_checked=None, timeout=600)
+        self.conf.register_global(
+            latest_fff=None, last_checked=None, timeout=600, interval=6
+        )
         self.background_check_for_update.start()
 
     async def init_loop(self):
@@ -85,6 +88,39 @@ class FactorioCogFriday(commands.Cog):
     @commands.group()
     async def fcf(self, ctx: commands.Context):
         """A simple cog to post FFFs when they're available."""
+
+    @checks.admin_or_permissions(manage_guild=True)
+    @fcf.command(usage="Optional[interval]")
+    async def interval(self, ctx: commands.Context, interval: Optional[float]):
+        """
+        Set the interval in hours at which to check for updates.
+
+        Default is 6 hours
+        Please be nice to the Factorio devs ❤️
+        """
+        if not ctx.message.author.bot:
+            if ctx.guild is not None:
+                if interval is None:
+                    interval = await self.conf.interval()
+                    return await ctx.send(
+                        f"I am currently checking every {interval} hours for a new FFFs."
+                    )
+                elif interval < 1:
+                    return await ctx.send(
+                        error("You cannot set the interval to less than 1 hour.")
+                    )
+                elif interval > 8760:
+                    return await ctx.send(
+                        error(
+                            "You cannot set the interval to greater than 8760 hours, why would you want to?"
+                        )
+                    )
+
+                await self.conf.interval.set(interval)
+                self.background_check_for_update.change_interval(hours=interval)
+                await ctx.send(
+                    success(f"I will now check every {interval} hours for a new FFF.")
+                )
 
     @commands.cooldown(1, 5, commands.BucketType.guild)
     @fcf.command(usage="Optional[number]")
