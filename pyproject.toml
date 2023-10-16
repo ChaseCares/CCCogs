@@ -1,0 +1,8 @@
+[tool.black]
+line-length = 99
+required-version = '23'
+target-version = ['py38']
+include = '\.py$'
+
+[tool.ruff]
+line-length = 99
