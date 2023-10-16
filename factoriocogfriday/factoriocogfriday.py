@@ -5,7 +5,7 @@ import aiohttp
 import discord
 import logging
 
-# Remove when minimum python version is > 3.10
+# Remove Union when minimum python version is > 3.10
 from typing import Union, Optional, Dict, Any
 from discord.ext import tasks
 from redbot.core import Config, commands, checks
