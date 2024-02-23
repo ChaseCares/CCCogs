@@ -4,7 +4,7 @@ Name `factoriocogfriday`
 Short name `[p]fcf`.
 Run `[p]help fcf` for help.
 
-Factorio is a construction and management simulation game, that publishes regular blogs called Factorio Friday Facts. This cog checks for an update every 6 hours, as to not be too intrusive. Only does one network request to factorio.com per Red-DiscordBot instance, regardless of how many guilds the bot is in.
+Factorio is a construction and management simulation game, that publishes regular blogs called Factorio Friday Facts. This cog checks for an update every 6 hours (as to not be too intrusive) and since a notification when a new FFF is published. Only does one network request to factorio.com per Red-DiscordBot instance, regardless of how many guilds the bot is in.
 
 ## Features
 
@@ -29,8 +29,8 @@ Everything is installed and ready to use.
 
 Run `[p]fcf fff` to receive the latest FFF or `[p]fcf fff <number>` to get a link to a specific FFF.
 
-`[p]fcf addchannel` to subscribe the current channel to receive regular updates or `[p]fcf addchannel <channel id>` to subscribe a different channel.
+`[p]fcf addchannel` to subscribe the current channel to receive regular updates or `[p]fcf addchannel <channel id>` to subscribe a specific channel.
 
-`[p]fcf rmchannel` to unsubscribe the current channel or `[p]fcf rmchannel <channel id>` to unsubscribe a different channel.
+`[p]fcf rmchannel` to unsubscribe the current channel or `[p]fcf rmchannel <channel id>` to unsubscribe a specific channel.
 
 [Unload instructions](../README.md#unload-cog-and-remove-repository-instructions)

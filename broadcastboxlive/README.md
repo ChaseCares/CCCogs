@@ -24,10 +24,10 @@ Everything is installed and ready to use.
 
 Run `[p]bbl status` to get who is currently streaming to Broadcast Box.
 
-Run `[p]bbl seturl <url>` to check for updates on a custom server.
+`[p]bbl seturl <url>` to check for updates on a custom server.
 
-`[p]bbl addchannel` to subscribe the current channel to receive regular updates or `[p]bbl addchannel <channel id>` to subscribe a different channel.
+`[p]bbl addchannel` to subscribe the current channel to receive regular updates or `[p]bbl addchannel <channel id>` to subscribe a specific channel.
 
-`[p]bbl rmchannel` to unsubscribe the current channel or `[p]bbl rmchannel <channel id>` to unsubscribe a different channel.
+`[p]bbl rmchannel` to unsubscribe the current channel or `[p]bbl rmchannel <channel id>` to unsubscribe a specific channel.
 
 [Unload instructions](../README.md#unload-cog-and-remove-repository-instructions)
