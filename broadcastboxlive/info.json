@@ -1,0 +1,20 @@
+{
+    "author": [
+        "ChaseCares"
+    ],
+    "name": "bblive",
+    "short": "Simple Broadcast Box live stream notifier",
+    "description": "A simple cog to post currently live streams from https://b.siobud.com.",
+    "install_msg": "`[p]bblive add #channel` for regular stream updates or `[p]bblive status` to check who is currently live.",
+    "end_user_data_statement": "This cog does not store end user data.",
+    "required_cogs": {},
+    "requirements": [],
+    "tags": [
+        "broadcast-box",
+        "Streaming"
+    ],
+    "min_bot_version": "3.5.0",
+    "hidden": false,
+    "disabled": false,
+    "type": "COG"
+}

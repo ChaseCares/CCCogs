@@ -28,40 +28,25 @@ Next add my repository with
 
 `RedBotCogs` will be the name of the repository
 
-### FactorioCogFriday
+## FactorioCogFriday
 
 Name `factoriocogfriday`
 Short name `[p]fcf`.
 Run `[p]help fcf` for help.
 
-- Add a channel to receive regular updates when new FFFs are released
-- Issue a command to get a link to a specific FFF
+Factorio is a construction and management simulation game, that publishes regular blogs called Factorio Friday Facts. This cog checks for an update every 6 hours, as to not be too intrusive. Only does one network request to factorio.com per Red-DiscordBot instance, regardless of how many guilds the bot is in.
 
-The cog checks for an update every 6 hours, as to be too intrusive. Only does one network request to factorio.com per server, what regardless of how many guilds the bot is in.
+[More info about FactorioCogFriday](./factoriocogfriday/README.md)
 
-#### Features
+## BroadcastBoxLive
 
-To install the FactorioCogFriday cog, run:
+Name `broadcastboxlive`
+Short name `[p]bbl`.
+Run `[p]help bbl` for help.
 
-```console
-[p]cog install RedBotCogs factoriocogfriday
-```
+[Broadcast Box](https://github.com/Glimesh/broadcast-box) lets you broadcast to others in sub-second time. This cog is designed to monitor the status page have a Broadcast Box instance and show who is currently streaming.
 
-Now that it's installed we need to load it with:
-
-```console
-[p]load factoriocogfriday
-```
-
-Everything is installed and ready to use.
-
-#### Usage
-
-Run `[p]fcf fff` to receive the latest FFF or `[p]fcf fff <number>` to get a link to a specific FFF.
-
-`[p]fcf addchannel` to subscribe the current channel to receive regular updates or `[p]fcf addchannel <channel id>` to subscribe a different channel.
-
-`[p]fcf rmchannel` to unsubscribe the current channel or `[p]fcf rmchannel <channel id>` to unsubscribe a different channel.
+[More info about BroadcastBoxLive](./broadcastboxlive/README.md)
 
 ## Unload Cog and Remove Repository Instructions
 
