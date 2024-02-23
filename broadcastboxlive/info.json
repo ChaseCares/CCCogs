@@ -5,7 +5,7 @@
     "name": "broadcastboxlive",
     "short": "Simple Broadcast Box live stream notifier",
     "description": "A simple cog to post currently live streams from https://b.siobud.com.",
-    "install_msg": "Thanks for checking out BroadcastBoxLive!\nIf you have any trouble, open an issue [here](https://github.com/ChaseCares/RedBotCogs/issues). To get started run `[p]help bbl`.",
+    "install_msg": "Thanks for checking out BroadcastBoxLive!\nIf you have any trouble, open an issue [here](https://github.com/ChaseCares/RedBotCogs/issues). To get started load the cog and run `[p]help bbl`.",
     "end_user_data_statement": "This cog does not store end user data.",
     "required_cogs": {},
     "requirements": [],

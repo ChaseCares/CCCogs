@@ -5,7 +5,7 @@
     "name": "factoriocogfriday",
     "short": "A simple FFF poster cog",
     "description": "A simple cog to post Factorio Friday Facts when they're available.",
-    "install_msg": "Thanks for checking out FactorioCogFriday!\nIf you have any trouble, open an issue [here](https://github.com/ChaseCares/RedBotCogs/issues). To get started run `[p]help fcf`.",
+    "install_msg": "Thanks for checking out FactorioCogFriday!\nIf you have any trouble, open an issue [here](https://github.com/ChaseCares/RedBotCogs/issues). To get started load the cog and run `[p]help fcf`.",
     "end_user_data_statement": "This cog does not store end user data.",
     "required_cogs": {},
     "requirements": [],
