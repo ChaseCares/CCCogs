@@ -40,6 +40,8 @@ Run `[p]help fcf` for help.
 
 Factorio is a construction and management simulation game, that publishes regular blogs called Factorio Friday Facts. This cog checks for an update every 6 hours (as to not be too intrusive) and since a notification when a new FFF is published. Only does one network request to factorio.com per Red-DiscordBot instance, regardless of how many guilds the bot is in.
 
+![Factorio Cog Friday announcement example](./img/factoriocogfriday-announcement.png)
+
 [More info about FactorioCogFriday](./factoriocogfriday/README.md)
 
 ## BroadcastBoxLive
@@ -49,6 +51,8 @@ Short name `[p]bbl`.
 Run `[p]help bbl` for help.
 
 [Broadcast Box](https://github.com/Glimesh/broadcast-box) lets you broadcast to others in sub-second time. This cog is designed to monitor the status page have a Broadcast Box instance and show who is currently streaming.
+
+![Broadcast Box Live embed example](./img/broadcastboxlive-embed.png)
 
 [More info about BroadcastBoxLive](./broadcastboxlive/README.md)
 

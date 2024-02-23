@@ -6,6 +6,8 @@ Run `[p]help bbl` for help.
 
 [Broadcast Box](https://github.com/Glimesh/broadcast-box) lets you broadcast to others in sub-second time. This cog is designed to monitor the status page have a Broadcast Box instance and show who is currently streaming.
 
+![Broadcast Box Live embed example](./img/broadcastboxlive-embed.png)
+
 To install the BroadcastBoxLive cog, run:
 
 ```console
