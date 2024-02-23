@@ -2,10 +2,10 @@
     "author": [
         "ChaseCares"
     ],
-    "name": "bblive",
+    "name": "broadcastboxlive",
     "short": "Simple Broadcast Box live stream notifier",
     "description": "A simple cog to post currently live streams from https://b.siobud.com.",
-    "install_msg": "`[p]bblive add #channel` for regular stream updates or `[p]bblive status` to check who is currently live.",
+    "install_msg": "Thanks for checking out broadcastboxlive! If you have any trouble open an issue: https://github.com/ChaseCares/RedBotCogs/issues",
     "end_user_data_statement": "This cog does not store end user data.",
     "required_cogs": {},
     "requirements": [],
