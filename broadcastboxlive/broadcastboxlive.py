@@ -75,7 +75,7 @@ class BroadcastBoxLive(commands.Cog):
                                 success(
                                     _(
                                         "Added {channel} to the list of channels receiving stream updates."
-                                        "To remove this channel, use `{prefix}bbl remove {channel}`."
+                                        " To remove this channel, use `{prefix}bbl remove {channel}`."
                                     ).format(channel=target_channel.mention, prefix=ctx.prefix)
                                 )
                             )
@@ -173,12 +173,9 @@ class BroadcastBoxLive(commands.Cog):
         url = await self.conf.guild(guild).url()
         url_bb_status = await self.conf.url_bb_status()
 
-        log.debug(f"URL: {url}")
-
         if url not in url_bb_status:
-            log.error(f"URL {url} not found in url_bb_status")
             resp = await self._get_current_status(guild, url)
-            log.warning(f"resp: {resp}")
+            log.warning(f"From get_current_status resp: {resp}")
             if resp is None:
                 return
 
