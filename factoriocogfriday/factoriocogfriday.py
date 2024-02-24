@@ -71,8 +71,6 @@ class FactorioCogFriday(commands.Cog):
                         log.error(f"Error getting latest FFF number. Status code: {resp.status}")
         except aiohttp.ClientError as e:
             log.error(f"Error during HTTP request: {e}")
-        except Exception as e:
-            log.error(f"An unexpected error occurred: {e}")
         return None
 
     async def _manage_channel(self, ctx: commands.Context, action: str, channel: Optional[int]):
@@ -210,7 +208,7 @@ class FactorioCogFriday(commands.Cog):
         if ctx.author.bot:
             return
 
-        async with ctx.typing():
+        async with ctx.trigger_typing():
             if ctx.guild is None:
                 await ctx.send(info(_("This command is only available in server/guild context.")))
                 return
@@ -246,7 +244,7 @@ class FactorioCogFriday(commands.Cog):
         if ctx.author.bot:
             return
 
-        async with ctx.typing():
+        async with ctx.trigger_typing():
             if number is not None:
                 await ctx.send(info(_("{fff_url}{number}").format(fff_url=FFF_URL, number=number)))
             else:

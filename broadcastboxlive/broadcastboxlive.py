@@ -30,7 +30,7 @@ class BroadcastBoxLive(commands.Cog):
         if ctx.author.bot:
             return
 
-        async with ctx.typing():
+        async with ctx.trigger_typing():
             if ctx.guild is None:
                 await ctx.send(info(_("This command is only available in server/guild context.")))
                 return
