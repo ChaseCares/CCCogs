@@ -29,48 +29,57 @@ fffnumREPat = re.compile(r"<id>https://www\.factorio\.com/blog/post/fff-(\d*)</i
 class FactorioCogFriday(commands.Cog):
     """A simple cog to post FFFs"""
 
-    def _checkTimeout(self, last_checked, timeout) -> bool:
+    def _check_timeout(self, last_checked, timeout) -> bool:
         if last_checked and int(time.time()) - last_checked < timeout:
             return False
         return True
 
     async def _check_for_update(self, guild: discord.Guild, channel: int):
-        fff_info = await self.conf.guild(guild).fff_info()
-        fff_sent_to_channel = fff_info.get(str(channel))
-        latest_fff = await self.conf.latest_fff()
+        try:
+            fff_info = await self.conf.guild(guild).fff_info()
+            fff_sent_to_channel = fff_info.get(str(channel))
+            latest_fff = await self.conf.latest_fff()
 
-        if not fff_sent_to_channel or fff_sent_to_channel < latest_fff:
-            await self.bot.get_channel(channel).send(
-                info(_("New FFF! {fff_url}{number}").format(number=latest_fff, fff_url=FFF_URL))
-            )
-            fff_info[channel] = latest_fff
+            if not fff_sent_to_channel or fff_sent_to_channel < latest_fff:
+                target_channel = self.bot.get_channel(channel)
+                if target_channel:
+                    await target_channel.send(
+                        _("New FFF! {fff_url}{number}").format(number=latest_fff, fff_url=FFF_URL)
+                    )
+                    fff_info[str(channel)] = latest_fff
+                else:
+                    log.error(f"Channel {channel} not found in guild {guild.name}.")
+            else:
+                log.debug(f"No new FFF to send to channel {channel} in guild {guild.name}.")
 
-        await self.conf.guild(guild).fff_info.set(fff_info)
+            await self.conf.guild(guild).fff_info.set(fff_info)
+        except Exception as e:
+            log.error(f"An error occurred during FFF update check: {e}")
 
     async def _get_latest_fff_number(self) -> Union[int, None]:
-        async with aiohttp.ClientSession() as client:
-            async with client.get(FFF_RSS) as resp:
-                status = resp.status
-                if status == 200:
-                    text = await resp.text()
-                    found_fff_num = re.search(fffnumREPat, text)
-                    if found_fff_num:
-                        return int(found_fff_num.group(1))
+        try:
+            async with aiohttp.ClientSession() as client:
+                async with client.get(FFF_RSS) as resp:
+                    if resp.status == 200:
+                        text = await resp.text()
+                        found_fff_num = re.search(fffnumREPat, text)
+                        if found_fff_num:
+                            return int(found_fff_num.group(1))
+                        else:
+                            log.error("Error finding FFF number.")
                     else:
-                        log.error("Error finding FFF number.")
-                else:
-                    log.error(
-                        "Error getting latest FFF number. Status code: {status}".format(
-                            status=status
-                        )
-                    )
+                        log.error(f"Error getting latest FFF number. Status code: {resp.status}")
+        except aiohttp.ClientError as e:
+            log.error(f"Error during HTTP request: {e}")
+        except Exception as e:
+            log.error(f"An unexpected error occurred: {e}")
         return None
 
     async def _manage_channel(self, ctx: commands.Context, action: str, channel: Optional[int]):
-        if ctx.message.author.bot:
+        if ctx.author.bot:
             return
 
-        async with ctx.channel.typing():
+        async with ctx.typing():
             if ctx.guild is None:
                 await ctx.send(info(_("This command is only available in server/guild context.")))
                 return
@@ -82,7 +91,7 @@ class FactorioCogFriday(commands.Cog):
                         ctx, str(target_channel)
                     )
                 except commands.ChannelNotFound:
-                    log.error(f"{ctx.channel} channel not found")
+                    log.error(f"{channel} channel not found")
                     await ctx.send(
                         error(_("{channel} channel doesn't exist.".format(channel=channel)))
                     )
@@ -92,35 +101,31 @@ class FactorioCogFriday(commands.Cog):
                     if target_channel.id in channels:
                         await ctx.send(
                             info(
-                                _("{channel} is already receiving FFFs.").format(
+                                _("{channel} is already receiving FFFs updates.").format(
                                     channel=target_channel.mention
                                 )
                             )
                         )
                     else:
                         try:
-                            await self._check_for_update(ctx.guild, target_channel.id)
+                            await self._publish_update(ctx.guild, target_channel.id)
                         except discord.errors.Forbidden:
                             await ctx.send(
                                 error(
                                     _("I don't have permission to send messages to that channel.")
                                 )
                             )
-                        except Exception:
-                            log.error("Error checking for update, error: {e}")
-                            await ctx.send(error("Error: {e}"))
+                        except Exception as e:
+                            log.error(f"Error checking for update, error: {e}")
+                            await ctx.send(error(_("Error: {error}").format(error=e)))
                         else:
                             channels.append(target_channel.id)
                             await ctx.send(
                                 success(
                                     _(
-                                        "Added {channel} to the list of channels "
-                                        "receiving FFFs.\nTo remove this channel, use "
-                                        "`{prefix}fcf managechannel remove {channel}`."
-                                    ).format(
-                                        channel=target_channel.mention,
-                                        prefix=ctx.prefix,
-                                    )
+                                        "Added {channel} to the list of channels receiving FFFs."
+                                        " To remove this channel, use `{prefix}bbl remove {channel}`."
+                                    ).format(channel=target_channel.mention, prefix=ctx.prefix)
                                 )
                             )
 
@@ -130,15 +135,14 @@ class FactorioCogFriday(commands.Cog):
                         await ctx.send(
                             success(
                                 _(
-                                    "Removed {channel} from the list of "
-                                    "channels receiving FFFs."
+                                    "Removed {channel} from the list of channels receiving FFFs."
                                 ).format(channel=target_channel.mention)
                             )
                         )
                     else:
                         await ctx.send(
                             info(
-                                _("{channel} is not receiving FFFs.").format(
+                                _("{channel} is not receiving FFFs updates.").format(
                                     channel=target_channel.mention
                                 )
                             )
@@ -166,16 +170,21 @@ class FactorioCogFriday(commands.Cog):
     async def background_check_for_update(self):
         last_checked = await self.conf.last_checked()
         timeout = await self.conf.timeout()
-        if self._checkTimeout(last_checked, timeout):
+
+        if self._check_timeout(last_checked, timeout):
             fff_num = await self._get_latest_fff_number()
             if fff_num:
                 await self.conf.latest_fff.set(fff_num)
                 await self.conf.last_checked.set(int(time.time()))
 
         for guild in self.bot.guilds:
-            channel = await self.conf.guild(guild).channels()
-            for channel in channel:
-                await self._check_for_update(guild, channel)
+            channels = await self.conf.guild(guild).channels()
+            for channel_id in channels:
+                channel = self.bot.get_channel(channel_id)
+                if channel:
+                    await self._check_for_update(guild, channel)
+                else:
+                    log.error(f"Channel {channel_id} not found in guild {guild.name}.")
 
     @background_check_for_update.before_loop
     async def wait_for_red(self):
@@ -198,10 +207,10 @@ class FactorioCogFriday(commands.Cog):
         Please be nice to the Factorio devs ❤️
         """
 
-        if ctx.message.author.bot:
+        if ctx.author.bot:
             return
 
-        async with ctx.channel.typing():
+        async with ctx.typing():
             if ctx.guild is None:
                 await ctx.send(info(_("This command is only available in server/guild context.")))
                 return
@@ -234,10 +243,10 @@ class FactorioCogFriday(commands.Cog):
         Links the latest FFF or the specific FFF if a number is provided.
         """
 
-        if ctx.message.author.bot:
+        if ctx.author.bot:
             return
 
-        async with ctx.channel.typing():
+        async with ctx.typing():
             if number is not None:
                 await ctx.send(info(_("{fff_url}{number}").format(fff_url=FFF_URL, number=number)))
             else:
