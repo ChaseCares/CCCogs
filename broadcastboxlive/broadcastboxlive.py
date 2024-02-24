@@ -63,9 +63,10 @@ class BroadcastBoxLive(commands.Cog):
                         except discord.errors.Forbidden:
                             await ctx.send(
                                 error(
-                                    _("I don't have permission to send messages to that channel.")
+                                    _("I don't have permission to send messages and/or embeds to that channel.")
                                 )
                             )
+                        except discord.errors.p
                         except Exception as e:
                             log.error(f"Error checking for update, error: {e}")
                             await ctx.send(error(_("Error: {error}").format(error=e)))
