@@ -321,8 +321,25 @@ class BroadcastBoxLive(commands.Cog):
         Set the Broadcast Box URL.
 
         This will set the URL for the Broadcast Box.
+
+        Acceptable URL forms:
+        - https://b.siobud.com/api/status
+        - http://siobud.com/api/status
+        - http://custom_domain.com:8080/api/status
+        - http://192.168.1.1:3000/api/status
         """
+
         if ctx.message.author.bot:
+            return
+
+        if not url.startswith("http"):
+            await ctx.send(
+                error(
+                    _(
+                        "Invalid URL. Must start with http:// or https://. (e.g. https://b.siobud.com/api/status)"
+                    )
+                )
+            )
             return
 
         if url.endswith("/api/status"):
