@@ -151,8 +151,8 @@ class FactorioCogFriday(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.conf = Config.get_conf(self, identifier=UNIQUE_ID, force_registration=True)
-        self.conf.register_guild(fff_info={}, channels=[])
-        self.conf.register_global(latest_fff=None, last_checked=None, timeout=600, interval=6)
+        self.conf.register_guild(fff_info={}, channels=[], interval=6)
+        self.conf.register_global(latest_fff=None, last_checked=None, timeout=600)
         self.background_check_for_update.start()
 
     async def red_delete_data_for_user(self, *args, **kwargs) -> None:
@@ -216,7 +216,7 @@ class FactorioCogFriday(commands.Cog):
                 return
 
             if interval is None:
-                interval = await self.conf.interval()
+                interval = await self.conf.guild(ctx.guild).interval()
                 await ctx.send(
                     info(_("Currently checking every {number} hours.").format(number=interval))
                 )
@@ -228,7 +228,7 @@ class FactorioCogFriday(commands.Cog):
                 await ctx.send(error(_("You cannot set the interval greater than 8760 hours.")))
                 return
 
-            await self.conf.interval.set(interval)
+            await self.conf.guild(ctx.guild).interval.set(interval)
             self.background_check_for_update.change_interval(hours=interval)
             await ctx.send(
                 success(
