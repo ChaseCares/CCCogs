@@ -26,15 +26,13 @@ EMBED_TITLE = "Live on Broadcast Box Now"
 class BroadcastBoxLive(commands.Cog):
     """A simple cog to post lave broadcast box streams"""
 
-    async def _manage_channel(self, ctx: commands.Context, action: str, channel: Optional[int]):
+    async def _manage_channel(
+        self, ctx: commands.Context, action: str, channel: Optional[int] = None
+    ):
         if ctx.author.bot:
             return
 
         async with ctx.trigger_typing():
-            if ctx.guild is None:
-                await ctx.send(info(_("This command is only available in server/guild context.")))
-                return
-
             async with self.conf.guild(ctx.guild).channels() as channels:
                 try:
                     target_channel = ctx.channel if channel is None else channel
@@ -63,7 +61,9 @@ class BroadcastBoxLive(commands.Cog):
                         except discord.errors.Forbidden:
                             await ctx.send(
                                 error(
-                                    _("I don't have permission to send messages and/or embeds to that channel.")
+                                    _(
+                                        "I don't have permission to send messages and/or embeds to that channel."
+                                    )
                                 )
                             )
                             return
@@ -181,33 +181,30 @@ class BroadcastBoxLive(commands.Cog):
         bb_resp_status = url_bb_status.get(url, {}).get("resp_status")
 
         embed = await self._format_embed(url, bb_data, bb_resp_status)
-        message_id = await self.conf.guild(guild).message()
+        previous_message = None
 
-        update_message = False
         async for message in self.bot.get_channel(channel).history(limit=5):
             if message.author == self.bot.user and message.embeds:
                 if message.embeds[0].title == EMBED_TITLE:
-                    update_message = True
+                    previous_message = message.id
                     break
 
         channel = self.bot.get_channel(channel)
 
-        if message_id and update_message:
+        if previous_message:
             try:
-                message = await channel.fetch_message(message_id)
+                await channel.fetch_message(previous_message)
             except discord.errors.NotFound:
-                message = await channel.send(embed=embed)
-                await self.conf.guild(guild).message.set(message.id)
+                await channel.send(embed=embed)
             else:
                 await message.edit(embed=embed)
         else:
-            message = await channel.send(embed=embed)
-            await self.conf.guild(guild).message.set(message.id)
+            await channel.send(embed=embed)
 
     def __init__(self, bot):
         self.bot = bot
         self.conf = Config.get_conf(self, identifier=UNIQUE_ID, force_registration=True)
-        self.conf.register_guild(channels=[], message=None, interval=60, url=BB_URL)
+        self.conf.register_guild(channels=[], interval=60, url=BB_URL)
         self.conf.register_global(url_bb_status={})
         self.background_check_for_update.start()
 
@@ -226,7 +223,7 @@ class BroadcastBoxLive(commands.Cog):
     async def background_check_for_update(self):
         for guild in self.bot.guilds:
             channels = await self.conf.guild(guild).channels()
-            if channels.__len__() == 0:
+            if len(channels) == 0:
                 continue
 
             url = await self.conf.guild(guild).url()
@@ -246,9 +243,10 @@ class BroadcastBoxLive(commands.Cog):
     async def bbl(self, ctx: commands.Context):
         """A simple cog to post lave broadcast box streams."""
 
-    @checks.admin_or_permissions(manage_guild=True)
+    @checks.admin_or_permissions()
+    @commands.guild_only()
     @bbl.command(usage="Optional[interval]")
-    async def interval(self, ctx: commands.Context, interval: Optional[int]):
+    async def interval(self, ctx: commands.Context, interval: Optional[int] = None):
         """
         Set the interval in seconds to check for updates.
 
@@ -260,10 +258,6 @@ class BroadcastBoxLive(commands.Cog):
             return
 
         async with ctx.channel.typing():
-            if ctx.guild is None:
-                await ctx.send(info(_("This command is only available in server/guild context.")))
-                return
-
             if interval is None:
                 interval = await self.conf.guild(ctx.guild).interval()
                 await ctx.send(
@@ -287,7 +281,7 @@ class BroadcastBoxLive(commands.Cog):
     @checks.admin_or_permissions(manage_guild=True)
     @commands.guild_only()
     @bbl.command(name="addchannel", aliases=["add"], usage="Optional[channel]")
-    async def addChannel(self, ctx: commands.Context, channel: Optional[int]):
+    async def addChannel(self, ctx: commands.Context, channel: Optional[int] = None):
         """
         Adds the current or a given channel to receive regular FFFs.
 
@@ -300,7 +294,7 @@ class BroadcastBoxLive(commands.Cog):
     @checks.admin_or_permissions(manage_guild=True)
     @commands.guild_only()
     @bbl.command(name="rmchannel", aliases=["remove"], usage="Optional[channel]")
-    async def removeChannel(self, ctx: commands.Context, channel: Optional[int]):
+    async def removeChannel(self, ctx: commands.Context, channel: Optional[int] = None):
         """
         Removes the current or a given channel from receiving regular FFFs.
 

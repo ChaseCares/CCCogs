@@ -73,15 +73,10 @@ class FactorioCogFriday(commands.Cog):
             log.error(f"Error during HTTP request: {e}")
         return None
 
-    async def _manage_channel(self, ctx: commands.Context, action: str, channel: Optional[int]):
-        if ctx.author.bot:
-            return
-
+    async def _manage_channel(
+        self, ctx: commands.Context, action: str, channel: Optional[int] = None
+    ):
         async with ctx.typing():
-            if ctx.guild is None:
-                await ctx.send(info(_("This command is only available in server/guild context.")))
-                return
-
             async with self.conf.guild(ctx.guild).channels() as channels:
                 try:
                     target_channel = ctx.channel if channel is None else channel
@@ -195,9 +190,10 @@ class FactorioCogFriday(commands.Cog):
     async def fcf(self, ctx: commands.Context):
         """A simple cog to post FFFs when they're available."""
 
-    @checks.admin_or_permissions(manage_guild=True)
+    @checks.admin_or_permissions()
+    @commands.guild_only()
     @fcf.command(usage="Optional[interval]")
-    async def interval(self, ctx: commands.Context, interval: Optional[float]):
+    async def interval(self, ctx: commands.Context, interval: Optional[float] = None):
         """
         Set the interval in hours at which to check for updates.
 
@@ -209,10 +205,6 @@ class FactorioCogFriday(commands.Cog):
             return
 
         async with ctx.trigger_typing():
-            if ctx.guild is None:
-                await ctx.send(info(_("This command is only available in server/guild context.")))
-                return
-
             if interval is None:
                 interval = await self.conf.guild(ctx.guild).interval()
                 await ctx.send(
@@ -236,13 +228,10 @@ class FactorioCogFriday(commands.Cog):
 
     @commands.cooldown(1, 5, commands.BucketType.guild)
     @fcf.command(usage="Optional[number]")
-    async def fff(self, ctx: commands.Context, number: Optional[int]):
+    async def fff(self, ctx: commands.Context, number: Optional[int] = None):
         """
         Links the latest FFF or the specific FFF if a number is provided.
         """
-
-        if ctx.author.bot:
-            return
 
         async with ctx.trigger_typing():
             if number is not None:
@@ -259,7 +248,7 @@ class FactorioCogFriday(commands.Cog):
     @checks.admin_or_permissions(manage_guild=True)
     @commands.guild_only()
     @fcf.command(name="addchannel", aliases=["add"], usage="Optional[channel]")
-    async def addChannel(self, ctx: commands.Context, channel: Optional[int]):
+    async def addChannel(self, ctx: commands.Context, channel: Optional[int] = None):
         """
         Adds the current or a given channel to receive regular FFFs.
 
@@ -272,7 +261,7 @@ class FactorioCogFriday(commands.Cog):
     @checks.admin_or_permissions(manage_guild=True)
     @commands.guild_only()
     @fcf.command(name="rmchannel", aliases=["remove"], usage="Optional[channel]")
-    async def removeChannel(self, ctx: commands.Context, channel: Optional[int]):
+    async def removeChannel(self, ctx: commands.Context, channel: Optional[int] = None):
         """
         Removes the current or a given channel from receiving regular FFFs.
 
