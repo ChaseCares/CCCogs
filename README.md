@@ -1,6 +1,6 @@
 # My Cogs for [Red Discord Bot](https://github.com/Cog-Creators/Red-DiscordBot)
 
-Repository name RedBotCogs
+Repository name CCCogs
 Cogs:
 
 * [FactorioCogFriday](./factoriocogfriday/README.md)
@@ -27,10 +27,10 @@ For official information on the downloader cog, see [Red Discord Bot’s documen
 Next add my repository with
 
 ```console
-[p]repo add RedBotCogs https://github.com/ChaseCares/RedBotCogs
+[p]repo add CCCogs https://github.com/ChaseCares/CCCogs
 ```
 
-`RedBotCogs` will be the name of the repository
+`CCCogs` will be the name of the repository
 
 ## FactorioCogFriday
 
